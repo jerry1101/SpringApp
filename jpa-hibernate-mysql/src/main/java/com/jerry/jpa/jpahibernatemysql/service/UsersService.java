@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jerry.jpa.jpahibernatemysql.model.User;
+import com.jerry.jpa.jpahibernatemysql.repo.UserEmDao;
 import com.jerry.jpa.jpahibernatemysql.repo.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersService {
     @Autowired
     UserRepository repo;
+    @Autowired
+    UserEmDao dao;
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -27,10 +30,16 @@ public class UsersService {
 
     }
 
+    @GetMapping("/name/{name}")
+    public User getByNameWithEM(@PathVariable final String name) {
+        Optional<User> user = dao.getByName(name);
+        return user.orElse(new User());
+
+    }
+
     @GetMapping("/{name}")
     public User getByName(@PathVariable final String name) {
         Optional<User> user = repo.findByName(name);
-
         //return user.orElseThrow(()-> new RuntimeException("No user found"));
         return user.orElse(new User());
 
