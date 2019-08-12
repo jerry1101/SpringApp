@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * User
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users", catalog = "example")
 @Data
 @NoArgsConstructor
+@ToString
 public class User {
 
     @Id
