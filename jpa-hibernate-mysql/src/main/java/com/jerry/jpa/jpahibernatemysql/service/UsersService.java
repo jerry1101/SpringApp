@@ -10,7 +10,9 @@ import com.jerry.jpa.jpahibernatemysql.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,6 +25,8 @@ public class UsersService {
     UserRepository repo;
     @Autowired
     UserEmDao dao;
+    @Autowired
+    KafkaProducer producer;
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -40,8 +44,13 @@ public class UsersService {
     @GetMapping("/{name}")
     public User getByName(@PathVariable final String name) {
         Optional<User> user = repo.findByName(name);
-        //return user.orElseThrow(()-> new RuntimeException("No user found"));
+        // return user.orElseThrow(()-> new RuntimeException("No user found"));
         return user.orElse(new User());
 
+    }
+
+    @PostMapping(value = "/publish")
+    public void sendMessageToKafkaTopic(@RequestParam("message") String message) {
+        this.producer.sendMessage(message);
     }
 }
